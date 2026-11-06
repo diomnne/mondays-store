@@ -189,4 +189,8 @@ public/products/
 - **Phase 1:** shadcn init (`radix-nova`) added `radix-ui`, `class-variance-authority`, `lucide-react`, `sonner`, `tw-animate-css`, `shadcn` (for `shadcn/tailwind.css`), and `cn` (shadcn's class merger, used by every primitive). `next-themes` was removed; the app is light-only.
 - **Phase 1:** `@types/node` was bumped from ^20 to ^24 (matches Node 24) because vitest 5 needs ≥22.
 - **Phase 1:** `SUPABASE_URL` must be the bare project URL. `lib/supabase/server.ts` throws a clear error if it has a path such as `/rest/v1/`.
+- **Phase 2:** listing filters are parsed and linked through `lib/validation/product-filters.ts` (`parseProductFilters`, `buildProductsHref`). Sort values: `name` (default), `price-asc`, `price-desc`. An unknown `category` returns no results.
+- **Phase 2:** storefront data returns `imageSrc`, which is the image path only if the file exists under `public/products` (`lib/data/product-image.ts`), otherwise null, and the UI shows the category-gradient placeholder. External image URLs aren't supported yet; decide in Phase 5.
+- **Phase 2:** `AddToCartButton` is disabled for every product until Phase 3 wires the cart. `/cart` is a placeholder page.
+- **Phase 2:** not-found product pages return HTTP 200, not 404, because `loading.tsx` streams the shell first. They carry `noindex`.
 - **Phase 1:** `types/database.ts` is written by hand from `supabase/migrations/20261106000000_init.sql`. `products.description` (default `''`) and `image_url` are NOT NULL. The RPCs take `text` for payment method and status; the TS types narrow them to the enum unions. `place_order`'s `cart_changed` entries are typed as the `CartChange` union in `types/order.ts`.

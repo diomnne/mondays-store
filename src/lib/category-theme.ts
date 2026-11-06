@@ -19,7 +19,22 @@ const CATEGORY_THEMES: Record<string, CategoryTheme> = {
 
 const FALLBACK_THEME: CategoryTheme = { swatch: "bg-muted", gradient: "bg-gradient-header" };
 
+/** The design lists categories as Lips, Face, Skin. Others follow alphabetically. */
+const CATEGORY_ORDER = ["lips", "face", "skin"];
+
+export function categoryKey(categoryName: string): string {
+  return categoryName.trim().toLowerCase();
+}
+
 export function categoryTheme(categoryName: string | null | undefined): CategoryTheme {
   if (!categoryName) return FALLBACK_THEME;
-  return CATEGORY_THEMES[categoryName.trim().toLowerCase()] ?? FALLBACK_THEME;
+  return CATEGORY_THEMES[categoryKey(categoryName)] ?? FALLBACK_THEME;
+}
+
+export function sortCategories<T extends { name: string }>(categories: readonly T[]): T[] {
+  const rank = (category: T) => {
+    const position = CATEGORY_ORDER.indexOf(categoryKey(category.name));
+    return position === -1 ? CATEGORY_ORDER.length : position;
+  };
+  return [...categories].sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 }

@@ -4,7 +4,7 @@ Manual acceptance checks. Each result is **Pass**, **Fail**, or **Not tested**, 
 
 | ID | Check | Result | Notes |
 |---|---|---|---|
-| 01 | Search, category filter, and both price sorts work together; no-match and invalid product states are handled | Not tested | |
+| 01 | Search, category filter, and both price sorts work together; no-match and invalid product states are handled | Pass | 2026-11-06, local production build, seeded data. `q=TINT` → Monday Tint only (case-insensitive). Lips low to high → 219, 259, 299, 329, 349; high to low reversed. `q=day` + Skin + high to low → Sunday Cream, Wednesday Wash, Thursday Mist. `q=zzz` and `q=50%` → empty state with Clear filters; `category=nails` → "That category doesn't exist." Unknown sort falls back to name. Tuesday Powder (inactive) never listed; `/products/tuesday-powder` and unknown slugs show "This one's off the shelf." Checked by requesting the URLs; recheck by clicking through the UI before submitting. |
 | 02 | Cart merges duplicate products, persists after refresh, and totals 2 × PHP 120.00 + 1 × PHP 85.50 = PHP 325.50 | Not tested | The calculation itself is covered by `src/lib/money.test.ts`. |
 | 03 | Empty checkout, invalid customer fields, and invalid or excessive quantities are blocked | Not tested | |
 | 04 | Inactive and out-of-stock items can't be ordered; checkout catches price or availability changes before saving | Not tested | |

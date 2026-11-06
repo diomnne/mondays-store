@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- Home page per the design: split hero under the glass nav, four featured products, giant stacked category links, and three value cards.
+- Product listing at `/products` with case-insensitive name search, category chips, and price sort, all kept in the URL and applied in the database query. Shows a result count, stock availability ("In stock", "Only N left", "Out of stock"), and an empty state with Clear filters.
+- Product details at `/products/[slug]` with a quantity selector (1 to stock) and up to three related products from the same category.
+- "This one's off the shelf" page for unknown and inactive products.
+- Category-gradient placeholder for any product whose image file doesn't exist yet.
+- Add to cart button with out-of-stock state, shown disabled until the cart is built.
+- Loading skeletons and page metadata for the listing and details pages.
+- Placeholder `/cart` page so the nav's Cart link works until the cart is built.
+- Unit tests for filter parsing, quantity limits, stock labels, and category order.
+
+### Changed
+- `public/products` is included in server file tracing so image checks also work on Vercel.
+
 ## [0.1.0] - 2026-11-06
 
 ### Added
