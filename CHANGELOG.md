@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-06
+
 ### Added
 - Home page per the design: split hero under the glass nav, four featured products, giant stacked category links, and three value cards.
 - Product listing at `/products` with case-insensitive name search, category chips, and price sort, all kept in the URL and applied in the database query. Shows a result count, stock availability ("In stock", "Only N left", "Out of stock"), and an empty state with Clear filters.
@@ -38,5 +40,6 @@ All notable changes to this project are documented here. The format is based on
 ### Changed
 - Moved the app into `src/`.
 
-[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/diomnne/mondays-store/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/diomnne/mondays-store/releases/tag/v0.1.0
