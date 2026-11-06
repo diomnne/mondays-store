@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-06
+
 ### Added
 - Database migration (tables, `place_order` and `update_order_status` functions, `dashboard_stats` and `customer_summary` views, RLS), seed/reset script, and database README.
 - shadcn/ui primitives themed to the Mondays brand: paper, ink, and category colors; lilac primary; single-color gradients; a glass utility; pill buttons at least 44px tall.
@@ -21,3 +23,6 @@ All notable changes to this project are documented here. The format is based on
 
 ### Changed
 - Moved the app into `src/`.
+
+[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/diomnne/mondays-store/releases/tag/v0.1.0
