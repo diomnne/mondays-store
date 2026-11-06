@@ -1,0 +1,192 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * The app is light-only. shadcn primitives ship `dark:` classes; binding the
+ * variant to a `.dark` class we never set keeps them from following the OS theme.
+ */
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+ * Brand tokens (Mondays brand guide). Components use these through the
+ * Tailwind color names below, never through raw hex values.
+ * ------------------------------------------------------------------------- */
+:root {
+  /* Core palette */
+  --paper: #eff1f1;
+  --ink: #1e2125;
+  --rose: #dca9b6;
+  --powder: #a9bdd0;
+  --sage: #a5bdb1;
+  --lilac: #a48cf5;
+
+  /* Pale tints: the start of each single-color gradient */
+  --rose-tint: #eccad3;
+  --powder-tint: #cbd8e5;
+  --sage-tint: #c9dbd1;
+  --header-tint: #e9eef2;
+  --header-base: #dce4ea;
+
+  /* shadcn semantic mapping */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--lilac);
+  --primary-foreground: var(--ink);
+  --secondary: var(--ink);
+  --secondary-foreground: var(--paper);
+  --muted: #e4e8ea;
+  --muted-foreground: #3a3f46;
+  --accent: #e4dcfd;
+  --accent-foreground: var(--ink);
+  --destructive: #9b2c42;
+  --destructive-soft: #f6e3e8;
+  --border: #d8dde0;
+  --input: #9aa2aa;
+  --ring: var(--lilac);
+  --radius: 0.875rem; /* 14px: inputs (rounded-lg) */
+
+  /* Order and product status badges */
+  --status-pending: #e4dcfd;
+  --status-pending-foreground: #3b2e7a;
+  --status-confirmed: #dde6ef;
+  --status-confirmed-foreground: #23384d;
+  --status-preparing: #f1dde3;
+  --status-preparing-foreground: #5a2b3a;
+  --status-shipped: #ffffff;
+  --status-shipped-foreground: var(--ink);
+  --status-completed: #dce7e1;
+  --status-completed-foreground: #23392f;
+  --status-cancelled: #e3e5e7;
+  --status-cancelled-foreground: #4a4f57;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-rose: var(--rose);
+  --color-powder: var(--powder);
+  --color-sage: var(--sage);
+  --color-lilac: var(--lilac);
+
+  --color-status-pending: var(--status-pending);
+  --color-status-pending-foreground: var(--status-pending-foreground);
+  --color-status-confirmed: var(--status-confirmed);
+  --color-status-confirmed-foreground: var(--status-confirmed-foreground);
+  --color-status-preparing: var(--status-preparing);
+  --color-status-preparing-foreground: var(--status-preparing-foreground);
+  --color-status-shipped: var(--status-shipped);
+  --color-status-shipped-foreground: var(--status-shipped-foreground);
+  --color-status-completed: var(--status-completed);
+  --color-status-completed-foreground: var(--status-completed-foreground);
+  --color-status-cancelled: var(--status-cancelled);
+  --color-status-cancelled-foreground: var(--status-cancelled-foreground);
+
+  /* Fonts come from next/font in the root layout */
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-calistoga), ui-serif, Georgia, serif;
+
+  /* Shape: inputs 14px (lg), cards 26px, footer card 40px. Pills use rounded-full. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-card: 1.625rem;
+  --radius-footer: 2.5rem;
+
+  /* Type scale 20 / 17 / 15 / 13 */
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.4;
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.5;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.55;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+}
+
+/* ---------------------------------------------------------------------------
+ * Gradients: one color only, pale tint to base at 160deg. Never on buttons,
+ * text, or the wordmark.
+ * ------------------------------------------------------------------------- */
+@utility bg-gradient-rose {
+  background-image: linear-gradient(160deg, var(--rose-tint), var(--rose));
+}
+@utility bg-gradient-powder {
+  background-image: linear-gradient(160deg, var(--powder-tint), var(--powder));
+}
+@utility bg-gradient-sage {
+  background-image: linear-gradient(160deg, var(--sage-tint), var(--sage));
+}
+@utility bg-gradient-header {
+  background-image: linear-gradient(160deg, var(--header-tint), var(--header-base));
+}
+
+/* ---------------------------------------------------------------------------
+ * Glass: only for floating layers over color (nav pill, tile Add to cart,
+ * dialogs, admin sidebar). Solid paper first, frosted where supported.
+ * ------------------------------------------------------------------------- */
+@utility glass {
+  background-color: var(--paper);
+  border: 1px solid rgb(255 255 255 / 0.55);
+  color: var(--ink);
+
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    background-color: color-mix(in srgb, var(--paper) 65%, transparent);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-body text-foreground antialiased;
+  }
+  /* Calistoga has a single weight; never let the browser fake a bold. */
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-synthesis-weight: none;
+  }
+  /* Links and other focusable elements that don't style their own focus. */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+}
