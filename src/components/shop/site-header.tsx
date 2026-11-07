@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MenuIcon, ShoppingBagIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 
 import { Wordmark } from "@/components/shared/wordmark";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+import { CartNavLink } from "./cart-nav-link";
 import { SHOP_NAV_LINKS } from "./nav-links";
 
 /**
@@ -48,12 +49,7 @@ export function SiteHeader() {
         </ul>
 
         <div className="flex items-center gap-1">
-          <Button asChild variant="secondary">
-            <Link href="/cart">
-              <ShoppingBagIcon aria-hidden="true" />
-              Cart
-            </Link>
-          </Button>
+          <CartNavLink />
 
           <Sheet>
             <SheetTrigger asChild>
