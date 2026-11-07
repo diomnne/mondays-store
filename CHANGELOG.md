@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-07
+
 ### Added
 - Cart saved in localStorage as product ids and quantities only, with a pure, unit-tested cart module: adding merges duplicates, quantities stay whole numbers capped at stock, and malformed stored data is ignored.
 - Hydration-safe cart provider that syncs across tabs, and a lilac item-count badge on the nav cart.
@@ -56,6 +58,7 @@ All notable changes to this project are documented here. The format is based on
 ### Changed
 - Moved the app into `src/`.
 
-[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/diomnne/mondays-store/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/diomnne/mondays-store/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/diomnne/mondays-store/releases/tag/v0.1.0
