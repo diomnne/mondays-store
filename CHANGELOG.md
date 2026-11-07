@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-07
+
 ### Added
 - Simulated admin login at `/admin/login`: a glass card on the powder gradient with the demo credentials and a not-secure warning. Credentials are checked on the server in constant time, wrong ones get one generic message, and the button is disabled while checking.
 - Admin session: an HS256 JWT (subject `demo-admin`, 8 hours) in the `mondays_admin` cookie: httpOnly, SameSite=Lax, Secure in production, scoped to `/admin`. Helpers `createSession`, `verifySession`, `requireAdmin`, and `deleteSession`.
@@ -72,7 +74,8 @@ All notable changes to this project are documented here. The format is based on
 ### Changed
 - Moved the app into `src/`.
 
-[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/diomnne/mondays-store/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/diomnne/mondays-store/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/diomnne/mondays-store/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/diomnne/mondays-store/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/diomnne/mondays-store/releases/tag/v0.1.0
