@@ -39,7 +39,13 @@ export function ProductTile({ product, sizes, priority, className }: ProductTile
         />
       </Link>
       <div className="absolute inset-x-2.5 bottom-2.5 sm:inset-x-3 sm:bottom-3">
-        <AddToCartButton productName={product.name} stock={product.stock} variant="glass" size="sm" />
+        <AddToCartButton
+          productId={product.id}
+          productName={product.name}
+          stock={product.stock}
+          variant="glass"
+          size="sm"
+        />
       </div>
     </div>
   );

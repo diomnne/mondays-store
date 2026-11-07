@@ -1,17 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { ChevronLeftIcon } from "lucide-react";
 
 import { ProductCard } from "@/components/shop/product-card";
 import { ProductImage } from "@/components/shop/product-image";
 import { PurchasePanel } from "@/components/shop/purchase-panel";
 import { StockStatus } from "@/components/shop/stock-status";
+import { Skeleton } from "@/components/ui/skeleton";
 import { categoryKey, categoryTheme } from "@/lib/category-theme";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data/products";
 import { formatPHP } from "@/lib/money";
 import { cn } from "@/lib/utils";
 import { buildProductsHref } from "@/lib/validation/product-filters";
+import type { ProductDetail } from "@/types/catalog";
+
+/**
+ * Blocking route: the product is loaded before anything is sent, so a missing
+ * or inactive slug can respond with a real 404 status. (A route-level
+ * loading.tsx would stream a 200 first.) Only related products stream in.
+ */
+export const instant = false;
 
 export async function generateMetadata({ params }: PageProps<"/products/[slug]">): Promise<Metadata> {
   const { slug } = await params;
@@ -28,7 +38,6 @@ export default async function ProductDetailsPage({ params }: PageProps<"/product
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const related = await getRelatedProducts(product);
   const categoryName = product.category?.name;
   const backHref = categoryName ? buildProductsHref({ category: categoryKey(categoryName) }) : "/products";
 
@@ -82,26 +91,49 @@ export default async function ProductDetailsPage({ params }: PageProps<"/product
           <p className="max-w-prose text-lead text-muted-foreground">{product.description}</p>
 
           <div className="max-w-sm">
-            <PurchasePanel productName={product.name} stock={product.stock} />
+            <PurchasePanel productId={product.id} productName={product.name} stock={product.stock} />
           </div>
         </div>
       </div>
 
-      {/* Omitted entirely when the category has no other active products. */}
-      {related.length > 0 && (
-        <section aria-labelledby="related-heading" className="mt-16 sm:mt-24">
-          <h2 id="related-heading" className="mb-6 text-[clamp(1.75rem,4vw,2.5rem)]">
-            More {categoryName ? `for ${categoryName.toLowerCase()}` : "like this"}
-          </h2>
-          <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:grid-cols-3">
-            {related.map((item) => (
-              <li key={item.id} className="flex">
-                <ProductCard product={item} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <Suspense fallback={<RelatedSkeleton />}>
+        <RelatedProducts product={product} />
+      </Suspense>
+    </div>
+  );
+}
+
+/** Omitted entirely when the category has no other active products. */
+async function RelatedProducts({ product }: { product: ProductDetail }) {
+  const related = await getRelatedProducts(product);
+  if (related.length === 0) return null;
+
+  const categoryName = product.category?.name;
+  return (
+    <section aria-labelledby="related-heading" className="mt-16 sm:mt-24">
+      <h2 id="related-heading" className="mb-6 text-[clamp(1.75rem,4vw,2.5rem)]">
+        More {categoryName ? `for ${categoryName.toLowerCase()}` : "like this"}
+      </h2>
+      <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:grid-cols-3">
+        {related.map((item) => (
+          <li key={item.id} className="flex">
+            <ProductCard product={item} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function RelatedSkeleton() {
+  return (
+    <div className="mt-16 sm:mt-24" aria-busy="true">
+      <Skeleton className="mb-6 h-10 w-56 rounded-2xl" />
+      <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:grid-cols-3">
+        {Array.from({ length: 3 }, (_, index) => (
+          <Skeleton key={index} className="aspect-[4/5] rounded-card" />
+        ))}
+      </div>
     </div>
   );
 }
