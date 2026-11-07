@@ -78,11 +78,11 @@ With the Supabase CLI: `supabase start`, then `supabase db reset` (runs the migr
 | Route | Page |
 |---|---|
 | `/` | Home |
-| `/products` | Product listing (search, category filter, price sort) _(Phase 2)_ |
-| `/products/[slug]` | Product details _(Phase 2)_ |
-| `/cart` | Cart _(Phase 3)_ |
-| `/checkout` | Checkout _(Phase 3)_ |
-| `/orders/[id]` | Order confirmation _(Phase 3)_ |
+| `/products` | Product listing (search, category filter, price sort) |
+| `/products/[slug]` | Product details (404 for missing or inactive products) |
+| `/cart` | Cart |
+| `/checkout` | Checkout |
+| `/orders/[id]` | Order confirmation by order uuid (404 if unknown) |
 
 **Admin** _(Phases 4–5)_
 

@@ -6,6 +6,22 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- Cart saved in localStorage as product ids and quantities only, with a pure, unit-tested cart module: adding merges duplicates, quantities stay whole numbers capped at stock, and malformed stored data is ignored.
+- Hydration-safe cart provider that syncs across tabs, and a lilac item-count badge on the nav cart.
+- Working Add to cart on the home, listing, and details pages, with a toast and a View cart action. Adding past the stock caps the quantity and says so.
+- Server Action that checks the cart against the database (current name, price, stock, active status). Unavailable lines are removed and over-stock lines lowered, with a notice for each.
+- Cart page with quantity steppers, Remove, line totals, subtotal, total, and an empty state.
+- Checkout with inline validation from a shared zod schema (checked again on the server), a summary priced fresh from the server, and the `place_order` RPC sent the prices the customer saw. The button reads "Placing your order…" and can't be pressed twice.
+- Checkout handling for every `place_order` result. Changed prices or stock show exactly what changed and update the cart, then wait for the customer to order again; other failures keep the cart untouched.
+- Order confirmation at `/orders/[id]`, loaded from the database: order number, customer details, payment method, items, total, and Pending status.
+- `src/proxy.ts`: returns a real 404 status for missing or inactive products and unknown orders.
+- Unit tests for the cart module, the checkout schema, and turning `cart_changed` into cart updates.
+
+### Changed
+- The product details page now blocks on the product itself (no route-level loading screen); only the related products stream in.
+- `/cart` is now the real cart instead of a placeholder.
+
 ## [0.2.0] - 2026-11-06
 
 ### Added
