@@ -6,6 +6,7 @@ AI assistance (Claude Code) was used during development. Every change was review
 |---|---|---|---|
 | 2026-11-06 | 1: foundations | Installed and themed shadcn/ui; wrote the Supabase server client, money and status helpers with unit tests, shared types, the shop layout shell, and a temporary home page; drafted these docs. | Approved the dependencies; checked the theme against the brand guide; ran build, lint, and tests. |
 | 2026-11-06 | 2: storefront browsing | Built the home, listing, and details pages, the URL-driven filters, the image placeholder, and the not-found page; added unit tests; checked 375px and 1280px layouts with a headless Chrome script. | Reviewed the filter results against the seed data and the layouts against the design. |
+| 2026-11-07 | 3: cart, checkout, confirmation | Built the cart module, store, and provider; the cart, checkout, and confirmation pages; the cart-check and place-order Server Actions; and the proxy for real 404s. Wrote unit tests and a scripted Chrome test that never saves an order. | Chose the proxy approach for real 404s; reviewed checkout error handling against each place_order result. |
 
 ## Notable decisions
 - **Fresh data with Cache Components.** The installed Next.js has `cacheComponents` on, so `export const dynamic` isn't allowed. Data functions call `await connection()` and render inside `<Suspense>`, so database reads always happen at request time.
@@ -14,4 +15,6 @@ AI assistance (Claude Code) was used during development. Every change was review
 - **Focus contrast.** Lilac is under 3:1 against the paper background, so focus states pair the lilac ring with ink (an offset or border) to stay visible.
 - **Filters in the database.** Search uses `ilike` with LIKE wildcards escaped, the category filter matches by name because categories have no slug, and an unknown category returns no results rather than everything.
 - **No broken images.** The server checks whether each product's image file exists and renders a category-gradient placeholder when it doesn't.
+- **The browser is never trusted with money.** The cart stores ids and quantities only. Every price shown comes from the server, and at checkout the database rechecks price, stock, and availability inside one transaction before saving anything.
+- **Real 404s through the proxy.** With Cache Components, a page's shell streams with a 200 before the page can call `notFound()`. The proxy checks first and rewrites missing records to static 404 pages.
 - **SUPABASE_URL check.** The server client rejects a URL with a path (such as `/rest/v1/`), because supabase-js adds that path itself and every request would otherwise fail with "Invalid path".

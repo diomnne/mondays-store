@@ -11,13 +11,15 @@ type QuantityStepperProps = {
   max: number;
   onChange: (quantity: number) => void;
   label?: string;
+  /** Compact (cart rows): label only for screen readers, no "Up to N" hint. */
+  compact?: boolean;
 };
 
 /**
  * − [n] + control limited to 1..max. Typing is allowed; the value is
  * corrected to a whole number in range when the field loses focus.
  */
-export function QuantityStepper({ value, max, onChange, label = "Quantity" }: QuantityStepperProps) {
+export function QuantityStepper({ value, max, onChange, label = "Quantity", compact = false }: QuantityStepperProps) {
   const inputId = useId();
   // While typing, the field may briefly hold "" or an out-of-range number.
   const [draft, setDraft] = useState<string | null>(null);
@@ -28,11 +30,12 @@ export function QuantityStepper({ value, max, onChange, label = "Quantity" }: Qu
   }
 
   return (
-    <div className="space-y-2">
-      <label htmlFor={inputId} className="block text-caption font-medium">
+    <div className={compact ? undefined : "space-y-2"}>
+      <label htmlFor={inputId} className={compact ? "sr-only" : "block text-caption font-medium"}>
         {label}
       </label>
-      <div className="inline-flex items-center gap-1 rounded-full border border-input bg-card p-0.5">
+      {/* The number field draws no outline itself; the whole pill shows focus instead. */}
+      <div className="inline-flex items-center gap-1 rounded-full border border-input bg-card p-0.5 has-[input:focus-visible]:border-foreground has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring">
         <Button
           type="button"
           variant="ghost"
@@ -69,7 +72,7 @@ export function QuantityStepper({ value, max, onChange, label = "Quantity" }: Qu
           <PlusIcon aria-hidden="true" />
         </Button>
       </div>
-      <p className="text-caption text-muted-foreground">Up to {max} available.</p>
+      {!compact && <p className="text-caption text-muted-foreground">Up to {max} available.</p>}
     </div>
   );
 }
