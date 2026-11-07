@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- Simulated admin login at `/admin/login`: a glass card on the powder gradient with the demo credentials and a not-secure warning. Credentials are checked on the server in constant time, wrong ones get one generic message, and the button is disabled while checking.
+- Admin session: an HS256 JWT (subject `demo-admin`, 8 hours) in the `mondays_admin` cookie: httpOnly, SameSite=Lax, Secure in production, scoped to `/admin`. Helpers `createSession`, `verifySession`, `requireAdmin`, and `deleteSession`.
+- Route guard in `src/proxy.ts`: logged-out visitors to `/admin/*` go to `/admin/login?next=…`, and logged-in visitors to the login page go to `/admin`. Every admin page also calls `requireAdmin()` itself.
+- Safe post-login redirect that only follows relative `/admin` paths, so `next` can't send anyone to another site.
+- Startup check (`src/instrumentation.ts`): the server refuses to start if the admin variables are missing or the session secret is shorter than 32 characters.
+- Admin shell: glass sidebar over the admin gradient with the current page highlighted, a demo-admin box with View store and Log out, and a top bar with a sheet menu on small screens. All admin routes are `noindex`.
+- Admin overview: the six summary figures from `dashboard_stats`, the five most recent orders with status badges, and a stock watch for active products that are out of stock or under 10.
+- Placeholder Products, Categories, Orders, and Customers pages inside the shell.
+- Unit tests for session tokens (round trip, expired, tampered, wrong secret, unsigned), the safe redirect, and the constant-time comparison.
+
+### Changed
+- Order dates use a shared Philippine-time formatter (`src/lib/dates.ts`).
+
 ## [0.3.0] - 2026-11-07
 
 ### Added
