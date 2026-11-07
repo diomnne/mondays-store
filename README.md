@@ -63,6 +63,14 @@ All variables are server-only. See [`.env.example`](.env.example).
 | `ADMIN_PASSWORD` | Demo admin password |
 | `ADMIN_SESSION_SECRET` | 32+ random characters used to sign the admin session cookie |
 
+The server checks the three `ADMIN_*` variables when it starts (`src/instrumentation.ts`) and the build checks them while rendering the login page, so a missing value or a session secret shorter than 32 characters fails straight away. Generate a secret with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+**On Vercel:** add all five variables under Project Settings → Environment Variables (for Production and Preview) before deploying. Without the `ADMIN_*` variables the build stops.
+
 ## Database setup, seed, and reset
 Full details, including the data model and the two database functions, are in [`supabase/README.md`](supabase/README.md).
 
@@ -84,22 +92,26 @@ With the Supabase CLI: `supabase start`, then `supabase db reset` (runs the migr
 | `/checkout` | Checkout |
 | `/orders/[id]` | Order confirmation by order uuid (404 if unknown) |
 
-**Admin** _(Phases 4–5)_
+**Admin** (requires the demo login; everything here is `noindex`)
 
 | Route | Page |
 |---|---|
-| `/admin/login` | Demo login |
-| `/admin` | Overview |
-| `/admin/products` | Products |
-| `/admin/categories` | Categories |
-| `/admin/orders` | Orders and order details |
-| `/admin/customers` | Customer summary |
+| `/admin/login` | Demo login. Logged-in visitors are sent to `/admin`. |
+| `/admin` | Overview: the six summary figures, recent orders, and a stock watch |
+| `/admin/products` | Products _(coming in the next update)_ |
+| `/admin/categories` | Categories _(coming in the next update)_ |
+| `/admin/orders` | Orders and order details _(coming in the next update)_ |
+| `/admin/customers` | Customer summary _(coming in the next update)_ |
+
+Any `/admin` route visited while logged out redirects to `/admin/login?next=<path>`. After logging in, you go back to that path, but only if it's a relative path inside `/admin`; anything else goes to `/admin`.
 
 ## Demo credentials
-Simulated login for demonstration only. **Not production-safe.**
+> **Simulated login, not production-safe.** It exists so reviewers can try the admin. There's one shared demo account read from environment variables, no rate limiting, and no way to revoke a session early. Don't reuse a real password.
 
 - Email: `admin@mondays.example`
 - Password: `mondays-demo`
+
+How it works: the login Server Action compares the submitted email and password with `ADMIN_EMAIL` and `ADMIN_PASSWORD` in constant time. On success it sets `mondays_admin`, a JWT signed with `ADMIN_SESSION_SECRET` (HS256, 8-hour expiry), in an httpOnly, SameSite=Lax cookie that is Secure in production and scoped to `/admin`. `src/proxy.ts` checks that cookie before any admin page loads, and every admin page and admin Server Action checks it again with `requireAdmin()`. Log out deletes the cookie.
 
 ## System flow and data model
 _TODO: order flow from cart to `place_order` to admin status updates; tables `categories`, `products`, `orders`, `order_items`; views `dashboard_stats`, `customer_summary`; relationships._

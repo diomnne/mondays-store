@@ -17,9 +17,9 @@ import { buildProductsHref } from "@/lib/validation/product-filters";
 import type { ProductDetail } from "@/types/catalog";
 
 /**
- * Blocking route: the product is loaded before anything is sent, so a missing
- * or inactive slug can respond with a real 404 status. (A route-level
- * loading.tsx would stream a 200 first.) Only related products stream in.
+ * The product is loaded before the page renders (no route-level loading
+ * screen); only related products stream in. Missing or inactive slugs get
+ * a real 404 from src/proxy.ts before this runs; notFound() below is a backstop.
  */
 export const instant = false;
 
