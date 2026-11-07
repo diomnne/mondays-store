@@ -6,6 +6,7 @@ import { CheckCircle2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOrderById } from "@/lib/data/orders";
+import { formatLongDateTime } from "@/lib/dates";
 import { formatPHP } from "@/lib/money";
 import { ORDER_STATUS_BADGE_CLASSES, ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/lib/order-status";
 
@@ -16,7 +17,9 @@ import { ORDER_STATUS_BADGE_CLASSES, ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS 
  * the customer who placed the order: it can't be guessed or enumerated the
  * way MON-0009 could. The page is also kept out of search engines.
  *
- * Blocking route (no loading.tsx), so an unknown id returns a real 404.
+ * Unknown ids get a real 404 from src/proxy.ts before this page runs; the
+ * notFound() below is a backstop. `instant = false` marks this as a page
+ * that waits for its data rather than showing a loading skeleton.
  */
 export const instant = false;
 
@@ -24,12 +27,6 @@ export const metadata: Metadata = {
   title: "Order confirmed",
   robots: { index: false, follow: false },
 };
-
-const placedAtFormat = new Intl.DateTimeFormat("en-PH", {
-  dateStyle: "long",
-  timeStyle: "short",
-  timeZone: "Asia/Manila",
-});
 
 export default async function OrderConfirmationPage({ params }: PageProps<"/orders/[id]">) {
   const { id } = await params;
@@ -63,7 +60,7 @@ export default async function OrderConfirmationPage({ params }: PageProps<"/orde
           </Badge>
         </div>
         <p className="text-caption text-muted-foreground">
-          Placed {placedAtFormat.format(new Date(order.created_at))}
+          Placed {formatLongDateTime(order.created_at)}
         </p>
 
         <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">

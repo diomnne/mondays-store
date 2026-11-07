@@ -195,4 +195,13 @@ public/products/
 - **Phase 3:** cart = `lib/cart.ts` (pure, tested), `lib/cart-store.ts` (localStorage under `mondays.cart.v1`, read with `useSyncExternalStore`: the server snapshot is empty so hydration matches, and `storage` events sync tabs), and `components/shop/cart-provider.tsx` in `(shop)/layout.tsx`. Prices and stock always come from `resolveCartAction` (`lib/actions/cart.ts`) through the `useResolvedCart` hook.
 - **Phase 3:** checkout uses `useActionState` with a *client* action function. It validates with the shared zod schema, then calls `placeOrderAction` (`lib/actions/checkout.ts`) with `expectedUnitPriceCents` = the price shown. It clears the cart only on `ok: true`, then `router.replace('/orders/<id>')`. Submitted values come back in state as `defaultValue`s, so React's automatic form reset doesn't wipe them after an error.
 - **Phase 3:** `/orders/[id]` is a guest page keyed by the unguessable order uuid; `noindex`.
+- **Phase 4:** auth lives in `lib/auth/`:
+  - `token.ts`: pure JWT sign/verify with jose; no `server-only`, so it's unit-tested and usable from the proxy.
+  - `config.ts`: env readers that throw clear errors, plus `credentialsMatch`.
+  - `compare.ts`: constant-time comparison.
+  - `redirect.ts`: `safeAdminRedirect`.
+  - `session.ts`: cookie helpers and `requireAdmin()`.
+  - The cookie `mondays_admin` is scoped to `path=/admin`.
+- **Phase 4:** the admin `(dashboard)` layout is a static shell (no session read). Each admin page is `async`, calls `await requireAdmin()` first, and sits under `(dashboard)/loading.tsx`, which is the Suspense boundary that Cache Components needs for the cookie read. **Every new admin page and admin Server Action must call `requireAdmin()` first.**
+- **Phase 4:** the login page reads `ADMIN_EMAIL` and `ADMIN_PASSWORD` to show the demo box. It's prerendered, so the build fails if they're missing, which is intended. `src/instrumentation.ts` also checks the admin env when the server starts.
 - **Phase 1:** `types/database.ts` is written by hand from `supabase/migrations/20261106000000_init.sql`. `products.description` (default `''`) and `image_url` are NOT NULL. The RPCs take `text` for payment method and status; the TS types narrow them to the enum unions. `place_order`'s `cart_changed` entries are typed as the `CartChange` union in `types/order.ts`.
